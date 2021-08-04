@@ -1,5 +1,4 @@
 import Phaser from 'phaser'
-//import test from '../../public/textures/sokoban_tilesheet.png'
 
 export default class Preloader extends Phaser.Scene
 {
