@@ -13,11 +13,11 @@ export default class Preloader extends Phaser.Scene
             frameWidth: 64
         })
 
-		this.load.image('bear', 'textures/bear.png')
-		this.load.image('chicken', 'textures/chicken.png')
-		this.load.image('duck', 'textures/duck.png')
-		this.load.image('parrot', 'textures/parrot.png')
-		this.load.image('penguin', 'textures/penguin.png')
+		this.load.image('bear', 'https://raw.githubusercontent.com/Jlaird/memory-phaser-html5/master/public/textures/bear.png')
+		this.load.image('chicken', 'https://raw.githubusercontent.com/Jlaird/memory-phaser-html5/master/public/textures/chicken.png')
+		this.load.image('duck', 'https://raw.githubusercontent.com/Jlaird/memory-phaser-html5/master/public/textures/duck.png')
+		this.load.image('parrot', 'https://raw.githubusercontent.com/Jlaird/memory-phaser-html5/master/public/textures/parrot.png')
+		this.load.image('penguin', 'https://raw.githubusercontent.com/Jlaird/memory-phaser-html5/master/public/textures/penguin.png')
 	}
 
 	create()

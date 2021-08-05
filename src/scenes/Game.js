@@ -171,7 +171,7 @@ export default class Game extends Phaser.Scene
 			targets: item,
 			y: '-=50',
 			alpha: 1,
-			scale: 1,
+			scale: .5,
 			duration: 500
 		})
 	}
