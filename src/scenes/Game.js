@@ -1,11 +1,13 @@
 import Phaser from 'phaser'
+import shuffle from 'array-shuffle'
+
 
 // 👇 level variable as 2D array of numbers
-const level = [
+const level = shuffle([
 	[1, 0, 3],
 	[2, 4, 1],
 	[3, 4, 2]
-]
+])
 
 export default class Game extends Phaser.Scene
 {
