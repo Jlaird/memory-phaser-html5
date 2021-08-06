@@ -8,10 +8,10 @@ const config = {
 	type: Phaser.AUTO,
 	width: 800,
 	height: 600,
+	backgroundColor: '#cccccc',
 	physics: {
 		default: 'arcade',
 		arcade: {
-			debug: true,
 			gravity: { y: 0 }
 		}
 	},

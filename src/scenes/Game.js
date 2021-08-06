@@ -25,6 +25,11 @@ export default class Game extends Phaser.Scene
 	/** @type {Phaser.GameObjects.Group} */
 	itemsGroup
 
+	/** @type {{ box: Phaser.Physics.Arcade.Sprite, item: Phaser.GameObjects.Sprite }[]} */
+	selectedBoxes = []
+
+	matchesCount = 0
+
 	constructor()
 	{
 		super('game')
@@ -84,6 +89,13 @@ export default class Game extends Phaser.Scene
 	 */
 	handlePlayerBoxCollide(player, box)
 	{
+		const opened = box.getData('opened')
+	
+		if (opened)
+		{
+			return
+		}
+
 		if (this.activeBox)
 		{
 			return
@@ -115,6 +127,56 @@ export default class Game extends Phaser.Scene
 
 			xPer = 0.25
 			y += 150
+		}
+	}
+
+	checkForMatch()
+	{
+		// pop from end to get second and first opened boxes
+		const second = this.selectedBoxes.pop()
+		const first = this.selectedBoxes.pop()
+
+		// no match if the revealed items are not the same texture
+		if (first.item.texture !== second.item.texture)
+		{
+			// hide the items and set box to no longer opened
+			this.tweens.add({
+				targets: [first.item, second.item],
+				y: '+=50',
+				alpha: 0,
+				scale: 0,
+				duration: 300,
+				delay: 1000,
+				onComplete: () => {
+					this.itemsGroup.killAndHide(first.item)
+					this.itemsGroup.killAndHide(second.item)
+
+					first.box.setData('opened', false)
+					second.box.setData('opened', false)
+				}
+			})
+			return
+		}
+
+		++this.matchesCount
+
+		// we have a match! wait 1 second then set box to frame 8
+		this.time.delayedCall(1000, () => {
+			first.box.setFrame(8)
+			second.box.setFrame(8)
+		})
+
+		if (this.matchesCount >= 4)
+		{
+			// game won
+			this.player.active = false
+			this.player.setVelocity(0, 0)
+
+			const { width, height } = this.scale
+			this.add.text(width * 0.5, height * 0.5, 'You Win!', {
+				fontSize: 48
+			})
+			.setOrigin(0.5)
 		}
 	}
 
@@ -166,13 +228,29 @@ export default class Game extends Phaser.Scene
 
 		item.scale = 0
 		item.alpha = 0
+		item.setData('sorted', true)
+		item.setDepth(2000)
+		item.setActive(true)
+		item.setVisible(true)
+
+		this.selectedBoxes.push({ box, item })
 	
 		this.tweens.add({
 			targets: item,
 			y: '-=50',
 			alpha: 1,
 			scale: .5,
-			duration: 500
+			duration: 500,
+			onComplete: () => {
+				// check that we have 2️⃣ items recently opened
+				if (this.selectedBoxes.length < 2)
+				{
+					return
+				}
+	
+				// we have to create this method
+				this.checkForMatch()
+			}
 		})
 	}
 
@@ -242,6 +320,11 @@ export default class Game extends Phaser.Scene
 			/** @type {Phaser.Physics.Arcade.Sprite} */
 			// @ts-ignore
 			const child = c
+
+			if (child.getData('sorted'))
+			{
+				return
+			}
 
 			child.setDepth(child.y)
 		})
